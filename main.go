@@ -20,37 +20,18 @@ import (
 )
 
 type AppConfig struct {
-	Name        string
-	AppID       string
-	Command     string
-	Categories  string
-	Summary     string
-	Description string
-	License     string
-	Developer   string
-	Date        string
-	TimeEntry   string
-	Version     string
-	DesUpdate1  string
-	DesUpdate2  string
-	DesUpdate3  string
-	Owner       string
-	NameRepo    string
-	NamePix1    string
-	NamePix2    string
-	NamePix3    string
-	NamePix4    string
-	NamePix5    string
+	Name    string
+	AppID   string
+	Version string
+
 	//exe
 	CompanyName string
 	Fileversion string
 	Years       string
-	month       string
-	days        string
 }
 
 // ============================================================================
-// ฟังชั้น gen + run template
+// ฟังชั้น gen template
 // ============================================================================
 func generateFile(tmplPath, outputPath string, data AppConfig) error {
 	tmpl, err := template.ParseFiles(tmplPath)
@@ -69,63 +50,15 @@ func generateFile(tmplPath, outputPath string, data AppConfig) error {
 }
 
 // ============================================================================
-// ฟังชั้น build เป็น flatpak
+// ฟังชั้น build Scriptbuild EXE
 // ============================================================================
-func runScriptbuildflatpak(projectPath string, output *widget.Entry) {
+func buildexe(projectPath string, output *widget.Entry) {
 
 	commands := [][]string{
-		{"gnome-terminal", "--", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildflatpak.sh && ./buildflatpak.sh; exec bash"},
-		{"x-terminal-emulator", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildflatpak.sh && ./buildflatpak.sh; exec bash"},
-		{"konsole", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildflatpak.sh && ./buildflatpak.sh; exec bash"},
-		{"xfce4-terminal", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildflatpak.sh && ./buildflatpak.sh; exec bash"},
-	}
-
-	for _, c := range commands {
-		cmd := exec.Command(c[0], c[1:]...)
-		err := cmd.Start()
-		if err == nil {
-			output.SetText("🚀 opened terminal: " + c[0])
-			return
-		}
-	}
-
-	output.SetText("❌ no terminal found")
-}
-
-// ============================================================================
-// ฟังชั้น build เป็น flatpak
-// ============================================================================
-func runScripinstallflatpak(projectPath string, output *widget.Entry) {
-
-	commands := [][]string{
-		{"gnome-terminal", "--", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildinstall.sh && ./buildinstall.sh; exec bash"},
-		{"x-terminal-emulator", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildinstall.sh && ./buildinstall.sh; exec bash"},
-		{"konsole", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildinstall.sh && ./buildinstall.sh; exec bash"},
-		{"xfce4-terminal", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildinstall.sh && ./buildinstall.sh; exec bash"},
-	}
-
-	for _, c := range commands {
-		cmd := exec.Command(c[0], c[1:]...)
-		err := cmd.Start()
-		if err == nil {
-			output.SetText("🚀 opened terminal: " + c[0])
-			return
-		}
-	}
-
-	output.SetText("❌ no terminal found")
-}
-
-// ============================================================================
-// ฟังชั้น build Icons
-// ============================================================================
-func runScriptbuildIcons(projectPath string, output *widget.Entry) {
-
-	commands := [][]string{ //ใช้ imagemagick
-		{"gnome-terminal", "--", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildicons.sh && ./buildicons.sh; exec bash"},
-		{"x-terminal-emulator", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildicons.sh && ./buildicons.sh; exec bash"},
-		{"konsole", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildicons.sh && ./buildicons.sh; exec bash"},
-		{"xfce4-terminal", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildicons.sh && ./buildicons.sh; exec bash"},
+		{"gnome-terminal", "--", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildexe.sh && ./buildexe.sh; exec bash"},
+		{"x-terminal-emulator", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildexe.sh && ./buildexe.sh; exec bash"},
+		{"konsole", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildexe.sh && ./buildexe.sh; exec bash"},
+		{"xfce4-terminal", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildexe.sh && ./buildexe.sh; exec bash"},
 	}
 
 	for _, c := range commands {
@@ -164,117 +97,24 @@ var iconFS embed.FS
 
 func main() {
 
-	a := app.NewWithID("com.nawakarit.flatpak")
+	a := app.NewWithID("com.nawakarit.oneexe")
 	icons := loadIcon(64) //เอา data มาใช้
 	a.SetIcon(icons)
-	w := a.NewWindow("flatpak")
+	w := a.NewWindow("oneexe")
 	w.SetIcon(icons)
 
 	// inputs
 	name := widget.NewEntry()
-	name.SetText("Pomodoro")
-	name.SetPlaceHolder("*App Name - ชื่อโปรแกรม-แอพ ")
+	name.SetText("")
+	name.SetPlaceHolder("***App Name - ชื่อโปรแกรม-แอพ ")
 
 	appID := widget.NewEntry()
 	appID.SetText("com.nawakarit.pomodoro")
 	appID.SetPlaceHolder("*com.example.app - แอพไอดี")
 
-	command := widget.NewEntry()
-	command.SetText("pomodoro")
-	command.SetPlaceHolder("*binary name - ชื่อโปแกรมตอน Build")
-
-	categories := widget.NewEntry()
-	categories.SetText("Utility;")
-	categories.SetPlaceHolder("*Utility; - ประเภทโปรแกรม")
-	/*
-		label := widget.NewLabel("")
-
-		checkList := widget.NewCheckGroup(
-			[]string{"A", "B", "C"},
-			func(selected []string) {
-				if len(selected) == 0 {
-					label.SetText("ยังไม่ได้เลือก")
-					return
-				}
-				label.SetText("เลือก: " + strings.Join(selected, "; ") + ";")
-			},
-		)
-	*/
-	catmenu := widget.NewMultiLineEntry()
-	catmenu.SetText(`ประเภทโปรแกรม
-	Utility; = ยูทิลิตี้ (ทั่วไป)
-	Development; = การพัฒนา
-	Game; = เกม
-	Graphics; = กราฟิก
-	Network; = เครือข่าย
-	Office; = สำนักงาน
-	Audio; = เสียง
-	Video; = วิดีโอ
-	System; = ระบบ`)
-	catmenu.SetMinRowsVisible(11)
-
-	summary := widget.NewEntry()
-	summary.SetText("Faster")
-	summary.SetPlaceHolder("*Short summary - คุณบัติของแอพ")
-
-	description := widget.NewMultiLineEntry()
-	description.SetText("and Faster more++")
-	description.SetPlaceHolder("*Description - รายละเอียดของแอพ")
-	description.SetMinRowsVisible(6)
-
-	developer := widget.NewEntry()
-	developer.SetText("nawakarit")
-	developer.SetPlaceHolder("*Your name - จะแสดงหน้าสโตร์")
-
-	date := widget.NewEntry()
-	date.SetPlaceHolder("📅 วันที่ - YYYY-MM-DD")
-
-	timeEntry := widget.NewEntry()
-	timeEntry.SetPlaceHolder("⏰ เวลา - HH:MM")
-
 	version := widget.NewEntry()
 	version.SetText("5.5.5")
 	version.SetPlaceHolder("*ใ่ส่เวอร์ชัน เช่น 1.0.0")
-
-	desUpdate1 := widget.NewEntry()
-	desUpdate1.SetText("ad go func")
-	desUpdate1.SetPlaceHolder("*สิ่งที่อัพเดท 1")
-
-	desUpdate2 := widget.NewEntry()
-	desUpdate2.SetText("ad tech sime")
-	desUpdate2.SetPlaceHolder("*สิ่งที่อัพเดท 2")
-
-	desUpdate3 := widget.NewEntry()
-	desUpdate3.SetText("ad Pix")
-	desUpdate3.SetPlaceHolder("*สิ่งที่อัพเดท 3")
-
-	owner := widget.NewEntry()
-	owner.SetText("nawakarit-VOID")
-	owner.SetPlaceHolder("*ชื่อเจ้าของ Github [Owner]")
-
-	nameRepo := widget.NewEntry()
-	nameRepo.SetText("test-2-flatpak")
-	nameRepo.SetPlaceHolder("*ชื่อ Repository")
-
-	namePix1 := widget.NewEntry()
-	namePix1.SetText("SCR_2026-04-06_21-06-09")
-	namePix1.SetPlaceHolder("*1.ชื่อ รูป ไม่ต้องเติมนามสกุล (เอารูปวางไว้ข้างไฟล์ main โปรเจค)")
-
-	namePix2 := widget.NewEntry()
-	namePix2.SetText("SCR_2026-04-06_21-07-08")
-	namePix2.SetPlaceHolder("*2.ชื่อ รูป ไม่ต้องเติมนามสกุล (เอารูปวางไว้ข้างไฟล์ main โปรเจค)")
-
-	namePix3 := widget.NewEntry()
-	namePix3.SetText("SCR_2026-04-06_21-07-18")
-	namePix3.SetPlaceHolder("*3.ชื่อ รูป ไม่ต้องเติมนามสกุล (เอารูปวางไว้ข้างไฟล์ main โปรเจค)")
-
-	namePix4 := widget.NewEntry()
-	namePix4.SetText("SCR_2026-04-06_21-07-08")
-	namePix4.SetPlaceHolder("*4.ชื่อ รูป ไม่ต้องเติมนามสกุล (เอารูปวางไว้ข้างไฟล์ main โปรเจค)")
-
-	namePix5 := widget.NewEntry()
-	namePix5.SetText("SCR_2026-04-06_21-06-09")
-	namePix5.SetPlaceHolder("*5.ชื่อ รูป ไม่ต้องเติมนามสกุล (เอารูปวางไว้ข้างไฟล์ main โปรเจค)")
 
 	//exe
 	companyName := widget.NewEntry()
@@ -310,28 +150,12 @@ func main() {
 			logBox.SetText("📁 Selected: " + projectPath)
 		}, w)
 	})
+
 	// ============================================================================
-	// Generate scrip Icons Btn
+	// Generate scrip Btn
 	// ============================================================================
 	// 🔧 Generate
-	genscripiconsBtn := widget.NewButton("2 - Generate scrip Icons", func() {
-
-		if projectPath == "" {
-			logBox.SetText("❌ Please select project folder")
-			return
-		}
-		cfg := AppConfig{}
-
-		generateFile("templates/buildicons.tmpl",
-			filepath.Join(projectPath, "buildicons.sh"), cfg) //เอา scrip build ออกมาไว้นอกแฟ้ม flatpak
-
-		logBox.SetText("✅ Generated File - - buildicons - -")
-	})
-	// ============================================================================
-	// Generate scrip flatpak Btn
-	// ============================================================================
-	// 🔧 Generate
-	genscripflatpakBtn := widget.NewButton("\n* * * 5 - Generate Folder * * *\n- - and scrip Flatpak - -\n- - Scrip Build Flatpak - -\n- - Scrip Install Flatpak - -\n", func() {
+	genscripexeBtn := widget.NewButton("Generate scrip EXE", func() {
 
 		if projectPath == "" {
 			logBox.SetText("❌ Please select project folder")
@@ -339,27 +163,10 @@ func main() {
 		}
 
 		cfg := AppConfig{
-			Name:        name.Text,
-			AppID:       appID.Text,
-			Command:     command.Text,
-			Categories:  categories.Text,
-			Summary:     summary.Text,
-			Description: description.Text,
-			License:     "GPL-3.0-or-later",
-			Developer:   developer.Text,
-			Date:        date.Text,
-			TimeEntry:   timeEntry.Text,
-			Version:     version.Text,
-			DesUpdate1:  desUpdate1.Text,
-			DesUpdate2:  desUpdate2.Text,
-			DesUpdate3:  desUpdate3.Text,
-			Owner:       owner.Text,
-			NameRepo:    nameRepo.Text,
-			NamePix1:    namePix1.Text,
-			NamePix2:    namePix2.Text,
-			NamePix3:    namePix3.Text,
-			NamePix4:    namePix4.Text,
-			NamePix5:    namePix5.Text,
+			Name:    name.Text,
+			AppID:   appID.Text,
+			Version: version.Text,
+
 			//exe
 			CompanyName: companyName.Text,
 			Fileversion: fileversion.Text,
@@ -369,20 +176,14 @@ func main() {
 		flatpakPath := projectPath + "/" + "flatpak"
 		os.MkdirAll(flatpakPath, 0755)
 
-		generateFile("templates/desktop.tmpl",
-			filepath.Join(flatpakPath, cfg.AppID+".desktop"), cfg)
+		generateFile("templates/app.rc.tmpl",
+			filepath.Join(projectPath, "app.rc"), cfg) //เอา scrip build ออกมาไว้นอกแฟ้ม
 
-		generateFile("templates/manifest.tmpl",
-			filepath.Join(flatpakPath, cfg.AppID+".json"), cfg)
+		generateFile("templates/buildexe.tmpl",
+			filepath.Join(projectPath, "buildexe.sh"), cfg)
 
-		generateFile("templates/metainfo.tmpl",
-			filepath.Join(flatpakPath, cfg.AppID+".metainfo.xml"), cfg)
-
-		generateFile("templates/buildflatpak.tmpl",
-			filepath.Join(projectPath, "buildflatpak.sh"), cfg) //เอา scrip build ออกมาไว้นอกแฟ้ม flatpak
-
-		generateFile("templates/buildinstall.tmpl",
-			filepath.Join(projectPath, "buildinstall.sh"), cfg)
+		generateFile("templates/FyneApp.toml.tmpl",
+			filepath.Join(projectPath, "FyneApp.toml"), cfg)
 
 		//now := time.Now()
 		//date.SetText(now.Format("2006-01-02"))
@@ -393,9 +194,9 @@ func main() {
 	})
 
 	// ============================================================================
-	// ปุ่ม Build flatpak
+	// ปุ่ม Build EXE
 	// ============================================================================
-	buildflatpakBtn := widget.NewButton("7 - Run Build Flatpak", func() {
+	buildexe := widget.NewButton("Build EXE", func() {
 
 		if projectPath == "" {
 			logBox.SetText("❌ select folder first")
@@ -403,39 +204,7 @@ func main() {
 		}
 
 		//  run script
-		go runScriptbuildflatpak(projectPath, logBox)
-
-		logBox.SetText("🚀 Build started in terminal...")
-	})
-
-	// ============================================================================
-	// ปุ่ม Install
-	// ============================================================================
-	installBtn := widget.NewButton("8 - Install Flatpak", func() {
-
-		if projectPath == "" {
-			logBox.SetText("❌ select folder first")
-			return
-		}
-
-		//  run script
-		go runScripinstallflatpak(projectPath, logBox)
-
-		logBox.SetText("🚀 Install started in terminal...")
-	})
-
-	// ============================================================================
-	// ปุ่ม Build Icons **ใช้ imagemagick
-	// ============================================================================
-	buildIconsBtn := widget.NewButton("3 - Run Build Icons", func() {
-
-		if projectPath == "" {
-			logBox.SetText("❌ select folder first")
-			return
-		}
-
-		//  run script
-		go runScriptbuildIcons(projectPath, logBox)
+		go buildexe(projectPath, logBox)
 
 		logBox.SetText("🚀 Build started in terminal...")
 	})
@@ -446,8 +215,6 @@ func main() {
 	nowBtn := widget.NewButton("4 - กด เพื่อ ใส่เวลาปัจจุบัน", func() {
 		now := time.Now()
 
-		date.SetText(now.Format("2006-01-02"))
-		timeEntry.SetText(now.Format("16:04"))
 		years.SetText(now.Format("2006")) //ปี
 		month.SetText(now.Format("01"))   //เดือน
 		days.SetText(now.Format("02"))    //วัน
@@ -460,39 +227,24 @@ func main() {
 	// จัดหน้ามัน
 	// ============================================================================
 
-	ui := container.NewGridWithColumns(2,
+	ui := container.NewVBox(
 
 		container.NewVBox(
-			container.NewGridWithColumns(3, selectBtn, genscripiconsBtn, buildIconsBtn),
-			container.NewGridWithColumns(2, name, appID),
-			container.NewGridWithColumns(2, command, categories),
-			catmenu,
-			container.NewGridWithColumns(2, developer, version),
-			container.NewGridWithColumns(3, date, timeEntry, nowBtn),
-			summary, description,
-		),
-		container.NewVBox(
-			container.NewGridWithColumns(3, desUpdate1, desUpdate2, desUpdate3),
-			container.NewGridWithColumns(2, owner, nameRepo),
-			namePix1,
-			namePix2,
-			namePix3,
-			namePix4,
-			namePix5,
-			genscripflatpakBtn,
+			container.NewGridWithColumns(3, selectBtn),
+			name, appID),
+		companyName,
 
-			container.NewCenter(widget.NewLabel("6 - ตรวจเช็คไฟล์ XML ก่อน")),
+		version,
+		fileversion,
 
-			buildflatpakBtn, installBtn,
+		years, //month, days,
+		nowBtn,
 
-			companyName,
-			fileversion,
-			years, //month, days,
-			//	checkList, label,
+		genscripexeBtn,
 
-			//widget.NewLabel("Logs:"),
-			logBox,
-		),
+		buildexe,
+
+		logBox,
 	)
 
 	w.SetContent(ui)
