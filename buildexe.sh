@@ -6,6 +6,10 @@ echo "🔧 build resource..."
 x86_64-w64-mingw32-windres app.rc -O coff -o rsrc.syso
 
 echo "📦 build exe..."
-CC=x86_64-w64-mingw32-gcc fyne package -os windows
+GOOS=windows GOARCH=amd64 CGO_ENABLED=1 \
+CC=x86_64-w64-mingw32-gcc \
+go build -o app.exe
 
 echo "✅ done"
+
+
