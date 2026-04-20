@@ -41,8 +41,12 @@ type AppConfig struct {
 	NamePix3    string
 	NamePix4    string
 	NamePix5    string
-
+	//exe
 	CompanyName string
+	Fileversion string
+	Years       string
+	month       string
+	days        string
 }
 
 // ============================================================================
@@ -182,7 +186,20 @@ func main() {
 	categories := widget.NewEntry()
 	categories.SetText("Utility;")
 	categories.SetPlaceHolder("*Utility; - ประเภทโปรแกรม")
+	/*
+		label := widget.NewLabel("")
 
+		checkList := widget.NewCheckGroup(
+			[]string{"A", "B", "C"},
+			func(selected []string) {
+				if len(selected) == 0 {
+					label.SetText("ยังไม่ได้เลือก")
+					return
+				}
+				label.SetText("เลือก: " + strings.Join(selected, "; ") + ";")
+			},
+		)
+	*/
 	catmenu := widget.NewMultiLineEntry()
 	catmenu.SetText(`ประเภทโปรแกรม
 	Utility; = ยูทิลิตี้ (ทั่วไป)
@@ -259,6 +276,19 @@ func main() {
 	namePix5.SetText("SCR_2026-04-06_21-06-09")
 	namePix5.SetPlaceHolder("*5.ชื่อ รูป ไม่ต้องเติมนามสกุล (เอารูปวางไว้ข้างไฟล์ main โปรเจค)")
 
+	//exe
+	companyName := widget.NewEntry()
+	companyName.SetText("Nawakarit")
+	companyName.SetPlaceHolder("*ชื่อบริษัท")
+
+	fileversion := widget.NewEntry()
+	fileversion.SetText("1,1,1,1")
+	fileversion.SetPlaceHolder("*version (exe) เช่น 1,1,1,1")
+
+	years := widget.NewLabel("")
+	month := widget.NewLabel("")
+	days := widget.NewLabel("")
+
 	// log box
 	logBox := widget.NewMultiLineEntry()
 	logBox.SetPlaceHolder("Logs will appear here...")
@@ -330,6 +360,10 @@ func main() {
 			NamePix3:    namePix3.Text,
 			NamePix4:    namePix4.Text,
 			NamePix5:    namePix5.Text,
+			//exe
+			CompanyName: companyName.Text,
+			Fileversion: fileversion.Text,
+			Years:       years.Text,
 		}
 
 		flatpakPath := projectPath + "/" + "flatpak"
@@ -349,6 +383,11 @@ func main() {
 
 		generateFile("templates/buildinstall.tmpl",
 			filepath.Join(projectPath, "buildinstall.sh"), cfg)
+
+		//now := time.Now()
+		//date.SetText(now.Format("2006-01-02"))
+		//timeEntry.SetText(now.Format("15:04"))
+		//years.SetText(now.Format("2006"))
 
 		logBox.SetText("✅ Generated File Flatpak - - and - - ✅ File Scrip Build Flatpak\n")
 	})
@@ -408,7 +447,14 @@ func main() {
 		now := time.Now()
 
 		date.SetText(now.Format("2006-01-02"))
-		timeEntry.SetText(now.Format("15:04"))
+		timeEntry.SetText(now.Format("16:04"))
+		years.SetText(now.Format("2006")) //ปี
+		month.SetText(now.Format("01"))   //เดือน
+		days.SetText(now.Format("02"))    //วัน
+
+		//years.SetText(now.Format("02"))   //วัน
+		//timeh.SetText(now.Format("16")) //ชั่วโมง
+		//timem.SetText(now.Format("04")) //นาที
 	})
 	// ============================================================================
 	// จัดหน้ามัน
@@ -438,6 +484,12 @@ func main() {
 			container.NewCenter(widget.NewLabel("6 - ตรวจเช็คไฟล์ XML ก่อน")),
 
 			buildflatpakBtn, installBtn,
+
+			companyName,
+			fileversion,
+			years, //month, days,
+			//	checkList, label,
+
 			//widget.NewLabel("Logs:"),
 			logBox,
 		),

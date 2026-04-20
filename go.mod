@@ -1,4 +1,4 @@
-module oneflatpak
+module oneexe
 
 go 1.26.1
 
