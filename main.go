@@ -190,7 +190,7 @@ func main() {
 		//timeEntry.SetText(now.Format("15:04"))
 		//years.SetText(now.Format("2006"))
 
-		logBox.SetText("✅ Generated File Flatpak - - and - - ✅ File Scrip Build Flatpak\n")
+		logBox.SetText("✅ Generated scrip exe")
 	})
 
 	// ============================================================================
