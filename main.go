@@ -41,6 +41,8 @@ type AppConfig struct {
 	NamePix3    string
 	NamePix4    string
 	NamePix5    string
+
+	CompanyName string
 }
 
 // ============================================================================
