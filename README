@@ -1,28 +1,41 @@
 ชื่อแอพ - 
     คุณสมบัติ
-        -ใช้สำหรับทำ 
-        -
+        -ใช้สำหรับทำไฟล์ .exe ไฟล์เดียว
 
 ขั้นตอนการใช้งาน 
     แบบง่ายที่สุด
-        - ดาวน์โหลด
+        - ดาวน์โหลด oneexe-x86_64.AppImage
         - แฟ้ม templates
 
 วิธีการใช้งาน
+    โครงสร้างแฟ้ม
+        1.สร้างแฟ้ม oneflatpak/
+        ├── oneexe-x86_64.AppImage
+        └── แฟ้ม templates
 
+        2.แฟ้มโปรเจคเป้าหมาย/
+        ├── icon.png (ตั้งชื่อว่า icon.png) (Master*)(512 อย่างน้อย)
+        ├── main.go
+        ├── go.mod
+        └── go.sum
+        3.เปิด oneexe-x86_64.AppImage
+            3.1 เลือกแฟ้มเป้าหมาย
+            3.2 กดสร้างสคริปต์สร้าง ไอคอน, กดสร้างไอคอน
+            3.3 กรอกรายละเอียด
+            3.4 กดเวลาปัจจุบัน
+            3.5 กดเจนสคริปต์ exe, กด build exe
 
 สิ่งที่เครื่องใช้งานจะต้องมี
-            -
+            -imagemagick
+            -mingw-w64 (sudo apt install mingw-w64)
             
 คุณสมบัติเด่น
-            -
+            -เร็ว
 
 คุณสมบัติเด่น (ที่ควรระวังมาก)
-            -
+            -ออกแบบมา build go
+            -เข้าถึงไฟล์ทั้งหมด
+
 ## License
 This project is licensed under the GNU GPL v3 License.
 คำอธิบายภาษาไทยดูได้ที่ `LICENSE.th.md`
-
-sudo apt install mingw-w64
-imagemagick
-
