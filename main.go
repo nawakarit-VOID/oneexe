@@ -248,8 +248,8 @@ func main() {
 			License:     license.Text,
 		}
 
-		flatpakPath := projectPath + "/" + "flatpak"
-		os.MkdirAll(flatpakPath, 0755)
+		//flatpakPath := projectPath + "/" + "flatpak"
+		//os.MkdirAll(flatpakPath, 0755)
 
 		generateFile("templates/app.rc.tmpl",
 			filepath.Join(projectPath, "app.rc"), cfg) //เอา scrip build ออกมาไว้นอกแฟ้ม
