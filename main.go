@@ -130,15 +130,15 @@ func main() {
 
 	// inputs
 	name := widget.NewEntry()
-	name.SetText("")
-	name.SetPlaceHolder("***App Name - ชื่อโปรแกรม-แอพ ")
+	name.SetText("oneexe")
+	name.SetPlaceHolder("*App Name - ชื่อโปรแกรม")
 
 	appID := widget.NewEntry()
-	appID.SetText("com.nawakarit.pomodoro")
+	appID.SetText("com.nawakarit.oneexe")
 	appID.SetPlaceHolder("*com.example.app - แอพไอดี")
 
 	version := widget.NewEntry()
-	version.SetText("5.5.5")
+	version.SetText("1.1.1")
 	version.SetPlaceHolder("*ใ่ส่เวอร์ชัน เช่น 1.0.0")
 
 	//exe
@@ -150,9 +150,20 @@ func main() {
 	fileversion.SetText("1,1,1,1")
 	fileversion.SetPlaceHolder("*version (exe) เช่น 1,1,1,1")
 
-	years := widget.NewLabel("")
-	month := widget.NewLabel("")
-	days := widget.NewLabel("")
+	years := widget.NewEntry()
+	years.SetPlaceHolder("*20XX")
+	years1 := container.NewGridWrap(fyne.NewSize(100, 35), years)
+	//years := widget.NewLabel("")
+
+	month := widget.NewEntry()
+	month.SetPlaceHolder("*01-12")
+	month1 := container.NewGridWrap(fyne.NewSize(80, 35), month)
+	//month := widget.NewLabel("")
+
+	days := widget.NewEntry()
+	days.SetPlaceHolder("*01-31")
+	days1 := container.NewGridWrap(fyne.NewSize(80, 35), days)
+	//days := widget.NewLabel("")
 
 	license := widget.NewEntry()
 	license.SetText("GNU General Public License v3.0")
@@ -301,7 +312,8 @@ func main() {
 		version,
 		fileversion,
 
-		years, //month, days,
+		container.NewCenter(container.NewHBox(widget.NewLabel("วันที่ "), days1, widget.NewLabel("เดือน "), month1, widget.NewLabel("ปี "), years1)),
+
 		nowBtn,
 
 		genscripexeBtn,
