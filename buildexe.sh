@@ -17,6 +17,18 @@ CC=x86_64-w64-mingw32-gcc \
 go build -o app.exe
 -----------------------
 
+--------------------------sudo apt install mingw-w64 ***-1
+GOOS=windows GOARCH=amd64 CGO_ENABLED=1 \
+CC=x86_64-w64-mingw32-gcc \
+go build -ldflags="-s -w -H windowsgui" -o app.exe
+
+---------------------------------------------------------
+      VALUE "LegalCopyright", "Copyright (C) 2026 Nawakarit, GNU General Public License v3.0"
+
+      VALUE "LegalCopyright", "Copyright © 2026 Nawakarit, GNU General Public License v3.0"
+
+
+
 2-GOOS=windows GOARCH=amd64 CGO_ENABLED=1 \ 
 CC=x86_64-w64-mingw32-gcc \ 
 go build -o app.exe

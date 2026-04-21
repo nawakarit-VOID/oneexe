@@ -14,7 +14,7 @@ BEGIN
       VALUE "InternalName", "www.exe"
       VALUE "OriginalFilename", "www.exe"
       VALUE "ProductName", "www"
-      VALUE "LegalCopyright", "© 2026 Nawakarit"
+      VALUE "LegalCopyright", "Copyright © 2026 Nawakarit, GNU General Public License v3.0"
       VALUE "ProductVersion", "58.8.8"
     END
   END
