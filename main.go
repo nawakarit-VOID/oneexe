@@ -28,6 +28,7 @@ type AppConfig struct {
 	CompanyName string
 	Fileversion string
 	Years       string
+	License     string
 }
 
 // ============================================================================
@@ -59,6 +60,30 @@ func buildexe(projectPath string, output *widget.Entry) {
 		{"x-terminal-emulator", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildexe.sh && ./buildexe.sh; exec bash"},
 		{"konsole", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildexe.sh && ./buildexe.sh; exec bash"},
 		{"xfce4-terminal", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildexe.sh && ./buildexe.sh; exec bash"},
+	}
+
+	for _, c := range commands {
+		cmd := exec.Command(c[0], c[1:]...)
+		err := cmd.Start()
+		if err == nil {
+			output.SetText("🚀 opened terminal: " + c[0])
+			return
+		}
+	}
+
+	output.SetText("❌ no terminal found")
+}
+
+// ============================================================================
+// ฟังชั้น build Icons
+// ============================================================================
+func runScriptbuildIcons(projectPath string, output *widget.Entry) {
+
+	commands := [][]string{ //ใช้ imagemagick
+		{"gnome-terminal", "--", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildicons.sh && ./buildicons.sh; exec bash"},
+		{"x-terminal-emulator", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildicons.sh && ./buildicons.sh; exec bash"},
+		{"konsole", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildicons.sh && ./buildicons.sh; exec bash"},
+		{"xfce4-terminal", "-e", "bash", "-c", "cd '" + projectPath + "' && chmod +x buildicons.sh && ./buildicons.sh; exec bash"},
 	}
 
 	for _, c := range commands {
@@ -129,6 +154,10 @@ func main() {
 	month := widget.NewLabel("")
 	days := widget.NewLabel("")
 
+	license := widget.NewEntry()
+	license.SetText("GNU General Public License v3.0")
+	license.SetPlaceHolder("*ใส่ประเภท license *ถ้าต้องการ")
+
 	// log box
 	logBox := widget.NewMultiLineEntry()
 	logBox.SetPlaceHolder("Logs will appear here...")
@@ -152,6 +181,40 @@ func main() {
 	})
 
 	// ============================================================================
+	// Generate scrip Icons Btn
+	// ============================================================================
+	// 🔧 Generate
+	genscripiconsBtn := widget.NewButton("2 - Generate scrip Icons", func() {
+
+		if projectPath == "" {
+			logBox.SetText("❌ Please select project folder")
+			return
+		}
+		cfg := AppConfig{}
+
+		generateFile("templates/buildicons.tmpl",
+			filepath.Join(projectPath, "buildicons.sh"), cfg) //เอา scrip build ออกมาไว้นอกแฟ้ม flatpak
+
+		logBox.SetText("✅ Generated File - - buildicons - -")
+	})
+
+	// ============================================================================
+	// ปุ่ม Build Icons **ใช้ imagemagick
+	// ============================================================================
+	buildIconsBtn := widget.NewButton("3 - Run Build Icons", func() {
+
+		if projectPath == "" {
+			logBox.SetText("❌ select folder first")
+			return
+		}
+
+		//  run script
+		go runScriptbuildIcons(projectPath, logBox)
+
+		logBox.SetText("🚀 Build started in terminal...")
+	})
+
+	// ============================================================================
 	// Generate scrip Btn
 	// ============================================================================
 	// 🔧 Generate
@@ -171,6 +234,7 @@ func main() {
 			CompanyName: companyName.Text,
 			Fileversion: fileversion.Text,
 			Years:       years.Text,
+			License:     license.Text,
 		}
 
 		flatpakPath := projectPath + "/" + "flatpak"
@@ -230,9 +294,9 @@ func main() {
 	ui := container.NewVBox(
 
 		container.NewVBox(
-			container.NewGridWithColumns(3, selectBtn),
+			container.NewGridWithColumns(3, selectBtn, genscripiconsBtn, buildIconsBtn),
 			name, appID),
-		companyName,
+		companyName, license,
 
 		version,
 		fileversion,
